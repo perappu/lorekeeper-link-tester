@@ -7,6 +7,7 @@ This script will attempt to find every link on your Lorekeeper website, visit it
 
 #### How to use:
 - Install [Python 3](https://www.python.org/downloads/).
+- Clone this repo locally.
 - Run these commands:
     - `pip install virtualenv`
     - `virtualenv venv`
