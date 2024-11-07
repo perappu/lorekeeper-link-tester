@@ -1,0 +1,18 @@
+## Lorekeeper Link Crawler
+
+This script will attempt to find every link on your Lorekeeper website, visit it, and see if it receives a 500 error.
+
+#### How to use:
+- Install [Python 3](https://www.python.org/downloads/).
+- Run these commands:
+    - `pip install virtualenv`
+    - `virtualenv venv`
+    - `source venv/bin/activate` (Linux) or `venv/bin/activate.bat` (Windows) or `venv/bin/activate.ps1` (Powershell) or however else you activate your virtualenvs
+    - `pip install -r requirements.txt`
+- Run `python crawler.py`.
+- Answer the prompts then let it fly!
+- Open the created `errors.html` file to view a report of all the errors the script found.
+
+#### Precautions:
+- This script can take a long time to run (over 15-30m). If you have a LOT of test data, it can take a long, _long_ time. I recommend creating a new database for this script and populating it with limited data if you have a lot in your current test database.
+- **Run this on your local!** Do not run it on live for both the reasons above and you don't want to slam your live website with unnecessary requests.
