@@ -2,13 +2,12 @@ import os
 import sys
 from bs4 import BeautifulSoup
 import requests
-import dominate
-from dominate.tags import *
+from jinja2 import Environment, FileSystemLoader
 
 # global vars
 urls=[]
 visitedurls=[]
-errorurls={}
+error_urls={}
 
 # recursion script
 def getAllLinksOnPage(session, link):
@@ -22,7 +21,7 @@ def getAllLinksOnPage(session, link):
         print(RED + "Error found with URL: " + RESET + BLUE + url + RESET)
         print(RED + soup.find("noscript").text + RESET)
         print()
-        errorurls[link] = soup.find("noscript").text
+        error_urls[link] = soup.find("noscript").text
 
     for link in soup.find_all('a'):
         if (link.get('href') is not None and "localhost" in link.get('href')):
@@ -58,17 +57,17 @@ payload = {
 with requests.Session() as sess:
 
     # begin session by logging in with our payload + adding the csrf token
-    #res = sess.get(home + '/login')
-    #signin = BeautifulSoup(res._content, 'html.parser')
-    #payload['_token'] = signin.find('input', {"name" : "_token"})['value']
-    #res = sess.post(home + '/login', data=payload)
+    res = sess.get(home + '/login')
+    signin = BeautifulSoup(res._content, 'html.parser')
+    payload['_token'] = signin.find('input', {"name" : "_token"})['value']
+    res = sess.post(home + '/login', data=payload)
     print(GREEN + "Login successful!" + RESET)
 
     # initiate the recursion
-    getAllLinksOnPage(sess, "http://localhost:8000")
+    getAllLinksOnPage(sess, home)
 
     for url in urls:
-        if url not in visitedurls:
+        if url not in visitedurls and "feeds" not in url:
 
             sys.stdout.write("\r" + (" " * os.get_terminal_size().columns))
             sys.stdout.flush()
@@ -79,14 +78,12 @@ with requests.Session() as sess:
             visitedurls.append(url)
 
 # when our recursion is complete, create the error log file
-doc = dominate.document(title='Lorekeeper Error Log')
+env = Environment(loader=FileSystemLoader('.'))
+template = env.get_template('resources/template.html')
 
-with doc:
-    with table().add(tbody()):
-        for url, msg in errorurls.items():
-            row = tr()
-            row += td(url)
-            row += td(msg)
+rendered_template = template.render({'errors': error_urls})
 
 with open("errors.html", "w") as f:
-    f.write(doc.render())
+    f.write(rendered_template)
+
+print(GREEN + "Done!" + RESET + "Please open the generated errors.html to view your error report.")
