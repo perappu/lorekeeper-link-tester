@@ -87,4 +87,4 @@ with open("errors.html", "w") as f:
     f.write(rendered_template)
 
 print()
-print(GREEN + "Done!" + RESET + "Please open the generated errors.html to view your error report.")
+print(GREEN + "Done!" + RESET + " Please open the generated errors.html to view your error report.")
