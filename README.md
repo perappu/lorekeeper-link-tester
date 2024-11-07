@@ -3,6 +3,8 @@ _"Still faster than checking by hand!"_
 
 This script will attempt to find every link on your Lorekeeper website, visit it, and see if it receives a 500 error.
 
+![image](https://github.com/user-attachments/assets/c4ef3db6-8986-421b-a193-3cb0d08b6893)
+
 #### How to use:
 - Install [Python 3](https://www.python.org/downloads/).
 - Run these commands:
