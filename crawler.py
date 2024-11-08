@@ -1,3 +1,5 @@
+""" crawler.py - python script for finding lorekeeper error pages """
+
 import os
 import sys
 from bs4 import BeautifulSoup
@@ -10,7 +12,7 @@ visitedurls=[]
 error_urls={}
 
 # recursion script
-def getAllLinksOnPage(session, link):
+def get_all_links_on_page(session, link):
     response = session.get(link)
     soup = BeautifulSoup(response.text, features="html.parser")
 
@@ -27,7 +29,9 @@ def getAllLinksOnPage(session, link):
         if (link.get('href') is not None and "localhost" in link.get('href')):
             urls.append(link.get('href'))
 
-# setup our console
+
+#########################################
+# Setup our console
 # Define some common ANSI color codes
 RESET = "\033[0m"
 BLACK = "\033[30m"
@@ -41,21 +45,20 @@ WHITE = "\033[37m"
 
 os.system('color')
 
-# get our vars
+# Get our user input vars
 home = input(YELLOW + "- Enter localhost URL (typically http://localhost): " + RESET)
 
 email = input(YELLOW + "- Enter admin email: " + RESET)
 
 password = input(YELLOW + "- Enter admin password: " + RESET)
 
-# create login payload
+# Create login payload
 payload = {
     'email': email,
     'password': password
 }
 
 with requests.Session() as sess:
-
     # begin session by logging in with our payload + adding the csrf token
     res = sess.get(home + '/login')
     signin = BeautifulSoup(res._content, 'html.parser')
@@ -64,7 +67,7 @@ with requests.Session() as sess:
     print(GREEN + "Login successful!" + RESET)
 
     # initiate the recursion
-    getAllLinksOnPage(sess, home)
+    get_all_links_on_page(sess, home)
 
     for url in urls:
         if url not in visitedurls and "feeds" not in url:
@@ -74,7 +77,7 @@ with requests.Session() as sess:
             sys.stdout.write("\r Checking... " + BLUE + url + RESET)
             sys.stdout.flush()
             
-            getAllLinksOnPage(sess, url)
+            get_all_links_on_page(sess, url)
             visitedurls.append(url)
 
 # when our recursion is complete, create the error log file
@@ -83,7 +86,7 @@ template = env.get_template('resources/template.html')
 
 rendered_template = template.render({'errors': error_urls})
 
-with open("errors.html", "w") as f:
+with open("errors.html", "w", encoding="utf-8") as f:
     f.write(rendered_template)
 
 print()
