@@ -1,6 +1,7 @@
 """ crawler.py - python script for finding lorekeeper error pages """
 
 import os
+import shutil
 import sys
 from bs4 import BeautifulSoup
 import requests
@@ -72,7 +73,7 @@ with requests.Session() as sess:
     for url in urls:
         if url not in visitedurls and "feeds" not in url:
 
-            sys.stdout.write("\r" + (" " * os.get_terminal_size().columns))
+            sys.stdout.write("\r" + (" " * shutil.get_terminal_size().columns))
             sys.stdout.flush()
             sys.stdout.write("\r Checking... " + BLUE + url + RESET)
             sys.stdout.flush()
