@@ -1,4 +1,4 @@
-## Lorekeeper Link Crawler
+## Lorekeeper Link Crawler/Tester
 _"Still faster than checking by hand!"_
 
 This script will attempt to find every link on your Lorekeeper website, visit it, and see if it receives a 500 error. It generates an `errors.html` file at the end with all the errors it found.
