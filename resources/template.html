@@ -47,5 +47,11 @@
         </tr>
         {% endfor %}
     </table>
+	    <h1>Routes Visited:</h1>
+    <ul>
+        {% for url in visited_urls %}
+        <li>{{ url }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

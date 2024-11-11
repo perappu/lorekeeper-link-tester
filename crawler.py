@@ -9,13 +9,15 @@ from jinja2 import Environment, FileSystemLoader
 
 # global vars
 urls=[]
-visitedurls=[]
+visited_urls=[]
 error_urls={}
 
 # recursion script
-def get_all_links_on_page(session, link):
-    response = session.get(link)
+def get_all_links_on_page(session, url):
+    response = session.get(url)
     soup = BeautifulSoup(response.text, features="html.parser")
+    
+    visited_urls.append(url)
 
     # if we found an error, record it
     # we look for the "noscript" tag because that's only gonna show up on laravel server error pages
@@ -24,7 +26,7 @@ def get_all_links_on_page(session, link):
         print(RED + "Error found with URL: " + RESET + BLUE + url + RESET)
         print(RED + soup.find("noscript").text + RESET)
         print()
-        error_urls[link] = soup.find("noscript").text
+        error_urls[url] = soup.find("noscript").text
 
     for link in soup.find_all('a'):
         if (link.get('href') is not None and "localhost" in link.get('href')):
@@ -71,7 +73,7 @@ with requests.Session() as sess:
     get_all_links_on_page(sess, home)
 
     for url in urls:
-        if url not in visitedurls and "feeds" not in url:
+        if url not in visited_urls and "feeds" not in url:
 
             sys.stdout.write("\r" + (" " * shutil.get_terminal_size().columns))
             sys.stdout.flush()
@@ -79,16 +81,15 @@ with requests.Session() as sess:
             sys.stdout.flush()
             
             get_all_links_on_page(sess, url)
-            visitedurls.append(url)
 
 # when our recursion is complete, create the error log file
 env = Environment(loader=FileSystemLoader('.'))
 template = env.get_template('resources/template.html')
-
-rendered_template = template.render({'errors': error_urls})
+visited_urls.sort()
+rendered_template = template.render({'errors': error_urls, 'visited_urls' : visited_urls})
 
 with open("errors.html", "w", encoding="utf-8") as f:
     f.write(rendered_template)
-
+    
 print()
 print(GREEN + "Done!" + RESET + " Please open the generated errors.html to view your error report.")
