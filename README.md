@@ -20,7 +20,8 @@ This script will attempt to find every link on your Lorekeeper website, visit it
     2. `pip install virtualenv`
     3. `virtualenv venv`
     4. `source venv/scripts/activate` (Linux) or `cd venv/scripts && activate.bat` (Windows)
-    5. `pip install -r requirements.txt`
+       - If you are on Windows you will also have to `cd ..` twice after the above command.
+    6. `pip install -r requirements.txt`
 5. Run `python crawler.py`.
 6. Answer the prompts then let it fly!
 7. Open the created `errors.html` file to view a report of all the errors the script found.
