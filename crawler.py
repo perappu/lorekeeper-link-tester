@@ -15,22 +15,24 @@ error_urls={}
 # recursion script
 def get_all_links_on_page(session, url):
     response = session.get(url)
-    soup = BeautifulSoup(response.text, features="html.parser")
     
-    visited_urls.append(url)
+    if('text/html' in response.headers.get('content-type')):
+        soup = BeautifulSoup(response.text, features="html.parser")
+        
+        visited_urls.append(url)
 
-    # if we found an error, record it
-    # we look for the "noscript" tag because that's only gonna show up on laravel server error pages
-    if soup.find("noscript"):
-        print()
-        print(RED + "Error found with URL: " + RESET + BLUE + url + RESET)
-        print(RED + soup.find("noscript").text + RESET)
-        print()
-        error_urls[url] = soup.find("noscript").text
+        # if we found an error, record it
+        # we look for the "noscript" tag because that's only gonna show up on laravel server error pages
+        if soup.find("noscript"):
+            print()
+            print(RED + "Error found with URL: " + RESET + BLUE + url + RESET)
+            print(RED + soup.find("noscript").text + RESET)
+            print()
+            error_urls[url] = soup.find("noscript").text
 
-    for link in soup.find_all('a'):
-        if (link.get('href') is not None and "localhost" in link.get('href')):
-            urls.append(link.get('href'))
+        for link in soup.find_all('a'):
+            if (link.get('href') is not None and "localhost" in link.get('href')):
+                urls.append(link.get('href'))
 
 
 #########################################
