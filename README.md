@@ -24,4 +24,5 @@ This script will attempt to find every link on your Lorekeeper website, visit it
     6. `pip install -r requirements.txt`
 5. Run `python crawler.py`.
 6. Answer the prompts then let it fly!
-7. Open the created `errors.html` file to view a report of all the errors the script found.
+    - **You must use localhost instead of 127.0.0.1 at the time of this writing.** Something about the Python requests library isn't playing nice with IP addresses -- however, the two should be synonymous. If you usually work from the IP 127.0.0.1, using "localhost" should still work.
+8. Open the created `errors.html` file to view a report of all the errors the script found.
